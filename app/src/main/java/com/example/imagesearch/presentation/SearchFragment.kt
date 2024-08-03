@@ -1,11 +1,14 @@
 package com.example.imagesearch.presentation
 
 import android.animation.ObjectAnimator
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +32,10 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by activityViewModels{
         SearchViewModelFactory(SearchRepositoryRemoteImpl(),LocalRepositoryImpl(LocalDataSource(requireContext())))
+    }
+
+    val manager by lazy {
+        requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     private var list = ArrayList<DocumentResponse>()
@@ -116,6 +123,7 @@ class SearchFragment : Fragment() {
                 page=1
                 viewModel.search(query,page)
             }
+            manager.hideSoftInputFromWindow(it.windowToken,0)
         }
     }
 
