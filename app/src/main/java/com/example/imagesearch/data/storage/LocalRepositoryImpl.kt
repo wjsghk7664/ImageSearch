@@ -1,0 +1,18 @@
+package com.example.imagesearch.data.storage
+
+import com.example.imagesearch.data.model.DocumentResponse
+
+class LocalRepositoryImpl(private val localDataSource: LocalDataSource):LocalRepository {
+    override fun getDatas(): ArrayList<DocumentResponse> {
+        return localDataSource.getDatas()
+    }
+
+    override fun deleteData(position: Int) {
+        localDataSource.deleteData(position)
+    }
+
+    override fun saveData(documentResponse: DocumentResponse) {
+        localDataSource.saveData(documentResponse)
+    }
+
+}
