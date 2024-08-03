@@ -15,6 +15,8 @@ class LocalDataSource(context: Context) {
 
     private val sharedPreferences = context.getSharedPreferences("search_pref",0)
 
+    private val sharedPreferencesQuery = context.getSharedPreferences("query_pref",0)
+
     init {
         key = sharedPreferences.all.keys.toMutableList() as ArrayList<String>
     }
@@ -44,5 +46,13 @@ class LocalDataSource(context: Context) {
         }
         Log.d("로컬 데이터",result.toString())
         return result
+    }
+
+    fun saveQuery(query:String){
+        sharedPreferencesQuery.edit().putString("query",query).apply()
+    }
+
+    fun getQuery():String{
+        return sharedPreferencesQuery.getString("query","")?:""
     }
 }

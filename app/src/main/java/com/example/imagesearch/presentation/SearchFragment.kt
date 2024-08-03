@@ -70,12 +70,12 @@ class SearchFragment : Fragment() {
 
         viewModel.results.observe(viewLifecycleOwner) {
             when (it) {
+                is UiState.Init -> searchEt.setText(it.initQuery)
                 is UiState.Empty -> list = ArrayList()
                 is UiState.Failure -> {
                     if (it.page == 1) list = ArrayList()
                     page = 1
                 }
-
                 is UiState.Success -> if (it.page == 1) list = it.docuList else list += it.docuList
                 is UiState.Update -> searchAdapter.updateStored(it.stored)
                 is UiState.Loading -> null
@@ -124,6 +124,7 @@ class SearchFragment : Fragment() {
                 viewModel.search(query,page)
             }
             manager.hideSoftInputFromWindow(it.windowToken,0)
+            viewModel.saveQuery(query)
         }
     }
 

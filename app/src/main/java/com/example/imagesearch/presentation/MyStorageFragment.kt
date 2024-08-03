@@ -1,6 +1,7 @@
 package com.example.imagesearch.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -53,7 +54,9 @@ class MyStorageFragment : Fragment() {
         mystorageRv.adapter=storageAdapter
 
         viewModel.results.observe(viewLifecycleOwner) {
+            Log.d("컬 스토리지",it.toString())
             when (it) {
+                is UiState.Init -> storageAdapter.submitList(it.stored.toList())
                 is UiState.Update -> storageAdapter.submitList(it.stored.toList())
                 else -> null
             }

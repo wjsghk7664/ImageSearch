@@ -15,4 +15,12 @@ class LocalRepositoryImpl(private val localDataSource: LocalDataSource):LocalRep
         localDataSource.saveData(documentResponse)
     }
 
+    override fun saveQuery(query: String) {
+        localDataSource.saveQuery(query)
+    }
+
+    override fun getQuery(): String {
+        return localDataSource.getQuery()
+    }
+
 }

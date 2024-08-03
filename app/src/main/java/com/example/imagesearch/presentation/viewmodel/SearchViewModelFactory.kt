@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.imagesearch.data.search.SearchRepository
 import com.example.imagesearch.data.storage.LocalRepository
 import com.example.imagesearch.domain.LocalDataDeleteUsecase
+import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
+import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
 import com.example.imagesearch.domain.RemoteImageUsecase
 import com.example.imagesearch.domain.RemoteVideoUsecase
@@ -18,7 +20,9 @@ class SearchViewModelFactory(private val searchRepository: SearchRepository, pri
                 RemoteVideoUsecase(searchRepository),
                 LocalDataGetUsecase(localRepository),
                 LocalDataDeleteUsecase(localRepository),
-                LocalDataSaveUsecase(localRepository)
+                LocalDataSaveUsecase(localRepository),
+                LocalDataGetQueryUsecase(localRepository),
+                LocalDataSaveQueryUsecase(localRepository)
             ) as T
         }
         throw IllegalArgumentException("viewModel factory error")

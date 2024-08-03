@@ -1,8 +1,10 @@
 package com.example.imagesearch.presentation
 
 import com.example.imagesearch.data.model.DocumentResponse
+import retrofit2.http.Query
 
 sealed class UiState {
+    data class Init(val initQuery: String,val stored:ArrayList<DocumentResponse>) : UiState()
     object Empty : UiState()
     object Loading : UiState()
     data class Failure(val page:Int) : UiState() //

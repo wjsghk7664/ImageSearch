@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.domain.LocalDataDeleteUsecase
+import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
+import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
 import com.example.imagesearch.domain.RemoteImageUsecase
 import com.example.imagesearch.domain.RemoteVideoUsecase
@@ -20,14 +22,16 @@ class SearchViewModel(
     private val remoteVideoUsecase: RemoteVideoUsecase,
     private val localDataGetUsecase: LocalDataGetUsecase,
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,
-    private val localDataSaveUsecase: LocalDataSaveUsecase
+    private val localDataSaveUsecase: LocalDataSaveUsecase,
+    private val localDataGetQueryUsecase: LocalDataGetQueryUsecase,
+    private val localDataSaveQueryUsecase: LocalDataSaveQueryUsecase
 ) : ViewModel() {
 
     private val _results: MutableLiveData<UiState> = MutableLiveData(UiState.Empty)
     val results = _results as LiveData<UiState>
 
     init {
-        updateData()
+        initQuery()
     }
 
     fun search(query: String, page:Int){
@@ -67,9 +71,15 @@ class SearchViewModel(
     }
 
     fun updateData(){
-        viewModelScope.launch {
-            _results.value = UiState.Update(localDataGetUsecase())
-        }
+        _results.value = UiState.Update(localDataGetUsecase())
+    }
+
+    fun initQuery(){
+        _results.value = UiState.Init(localDataGetQueryUsecase(),localDataGetUsecase())
+    }
+
+    fun saveQuery(query:String){
+        localDataSaveQueryUsecase(query)
     }
 
 
