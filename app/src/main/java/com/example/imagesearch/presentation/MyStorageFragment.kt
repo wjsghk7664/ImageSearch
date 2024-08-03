@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.imagesearch.data.search.SearchRepositoryRemoteImpl
@@ -51,12 +52,10 @@ class MyStorageFragment : Fragment() {
         mystorageRv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         mystorageRv.adapter=storageAdapter
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.results.collectLatest {
-                when(it){
-                    is UiState.Update -> storageAdapter.submitList(it.stored.toList())
-                    else -> null
-                }
+        viewModel.results.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Update -> storageAdapter.submitList(it.stored.toList())
+                else -> null
             }
         }
     }

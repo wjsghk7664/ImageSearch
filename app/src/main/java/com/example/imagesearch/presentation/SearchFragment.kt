@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -60,23 +61,19 @@ class SearchFragment : Fragment() {
         searchRv.adapter = searchAdapter
         searchRv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.results.collectLatest {
-                when(it){
-                    is UiState.Empty -> list = ArrayList()
-                    is UiState.Failure -> {
-                        if(it.page==1) list = ArrayList()
-                        page=1
-                    }
-                    is UiState.Success -> if(it.page==1) list = it.docuList else list+=it.docuList
-                    is UiState.Update -> searchAdapter.updateStored(it.stored)
-                    is UiState.Loading -> null
-                }
-                withContext(Dispatchers.Main){
-                    searchAdapter.submitList(list.toList())
+        viewModel.results.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Empty -> list = ArrayList()
+                is UiState.Failure -> {
+                    if (it.page == 1) list = ArrayList()
+                    page = 1
                 }
 
+                is UiState.Success -> if (it.page == 1) list = it.docuList else list += it.docuList
+                is UiState.Update -> searchAdapter.updateStored(it.stored)
+                is UiState.Loading -> null
             }
+            searchAdapter.submitList(list.toList())
         }
 
         searchRv.addOnScrollListener(object :RecyclerView.OnScrollListener(){
