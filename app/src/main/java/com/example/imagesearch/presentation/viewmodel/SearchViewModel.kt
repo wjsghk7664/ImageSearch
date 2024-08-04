@@ -1,5 +1,6 @@
 package com.example.imagesearch.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,14 +11,12 @@ import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
 import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
-import com.example.imagesearch.domain.RemoteDataSearchAdditionalUsecase
-import com.example.imagesearch.domain.RemoteDataSearchInitUsecase
+import com.example.imagesearch.domain.RemoteDataSearchUsecase
 import com.example.imagesearch.presentation.UiState
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val remoteDataSearchInitUsecase: RemoteDataSearchInitUsecase,
-    private val remoteDataSearchAdditionalUsecase: RemoteDataSearchAdditionalUsecase,
+    private val remoteDataSearchUsecase: RemoteDataSearchUsecase,
     private val localDataGetUsecase: LocalDataGetUsecase,
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,
     private val localDataSaveUsecase: LocalDataSaveUsecase,
@@ -35,7 +34,8 @@ class SearchViewModel(
     fun searchInit(query: String){
         var list:ArrayList<DocumentResponse>? = ArrayList()
         viewModelScope.launch {
-            list=remoteDataSearchInitUsecase(query)
+            _results.value=UiState.Loading
+            list=remoteDataSearchUsecase(query,1)
         }.invokeOnCompletion {
             _results.value=when(list){
                 ArrayList<DocumentResponse>() -> UiState.Empty
@@ -48,7 +48,9 @@ class SearchViewModel(
     fun searchAdditional(query: String, page:Int){
         var list:ArrayList<DocumentResponse>? = ArrayList()
         viewModelScope.launch {
-            list=remoteDataSearchAdditionalUsecase(query, page)
+            _results.value=UiState.Loading
+            list=remoteDataSearchUsecase(query, page)
+            Log.d("추가 검색",list.toString())
         }.invokeOnCompletion {
             _results.value=when(list){
                 ArrayList<DocumentResponse>() -> UiState.AdditionalEmpty

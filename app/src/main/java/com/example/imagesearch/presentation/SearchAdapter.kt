@@ -13,6 +13,7 @@ import coil.size.Scale
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.data.model.ImageDocumentResponse
 import com.example.imagesearch.data.model.containsDoc
+import com.example.imagesearch.data.model.equalsDoc
 import com.example.imagesearch.data.model.indexOfDoc
 import com.example.imagesearch.databinding.SearchItemBinding
 
@@ -29,14 +30,14 @@ class SearchAdapter(val onClickAdd:(DocumentResponse) ->Unit,val onClickDelete:(
                 oldItem: DocumentResponse,
                 newItem: DocumentResponse
             ): Boolean {
-                return (oldItem.thumbnail == newItem.thumbnail)&&(oldItem.time == newItem.time)&&(oldItem.title == newItem.title)
+                return oldItem.equalsDoc(newItem)
             }
 
             override fun areContentsTheSame(
                 oldItem: DocumentResponse,
                 newItem: DocumentResponse
             ): Boolean {
-                return (oldItem.thumbnail == newItem.thumbnail)&&(oldItem.time == newItem.time)&&(oldItem.title==newItem.title)&&(prevStored.containsDoc(oldItem)== curStored.containsDoc(newItem))
+                return oldItem.equalsDoc(newItem)&&(prevStored.containsDoc(oldItem)== curStored.containsDoc(newItem))
             }
         }
     }
@@ -66,6 +67,7 @@ class SearchAdapter(val onClickAdd:(DocumentResponse) ->Unit,val onClickDelete:(
                 }
             }
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -84,5 +86,7 @@ class SearchAdapter(val onClickAdd:(DocumentResponse) ->Unit,val onClickDelete:(
         val date = binding.itemTvDate
         val star = binding.itemIvStar
     }
+
+
 
 }

@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.imagesearch.R
 import com.example.imagesearch.data.search.SearchRepositoryRemoteImpl
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.data.storage.LocalDataSource
@@ -37,6 +39,13 @@ class SearchFragment : Fragment() {
 
     val manager by lazy {
         requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+    }
+
+    private val loadingDialog by lazy {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("로딩중...")
+            setView(layoutInflater.inflate(R.layout.dialog_loading, null))
+        }.create()
     }
 
     private var list = ArrayList<DocumentResponse>()
@@ -71,21 +80,34 @@ class SearchFragment : Fragment() {
         searchRv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         viewModel.results.observe(viewLifecycleOwner) {
+            var showNoResult=false
             when (it) {
                 is UiState.Init -> searchEt.setText(it.initQuery)
-                is UiState.Empty -> list = ArrayList()
+                is UiState.Empty -> {
+                    list = ArrayList()
+                    showNoResult=true
+                }
                 is UiState.AdditionalEmpty -> null
-                is UiState.FailureInit -> list = ArrayList()
+                is UiState.FailureInit -> {
+                    list = ArrayList()
+                    showNoResult=true
+                }
                 is UiState.FailureAdditional -> null
                 is UiState.SuccessInit -> list = it.docuList
                 is UiState.SuccessAdditional -> {
                     list +=it.docuList
-                    Log.d("성공 추가",page.toString())
+                    Log.d("추가 검색", page.toString())
                 }
                 is UiState.Update -> searchAdapter.updateStored(it.stored)
-                is UiState.Loading -> showDialog()
+                is UiState.Loading -> null
             }
-            if(it is UiState.Loading) showDialog() else searchAdapter.submitList(list.toList())
+            if(it is UiState.Loading){
+                loadingDialog.show()
+            } else{
+                searchAdapter.submitList(list.toList())
+                loadingDialog.dismiss()
+            }
+            searchNoresultTv.visibility = if(showNoResult) View.VISIBLE else View.INVISIBLE
         }
 
         searchRv.addOnScrollListener(object :RecyclerView.OnScrollListener(){
@@ -129,6 +151,7 @@ class SearchFragment : Fragment() {
 
         searchBtn.setOnClickListener {
             query=searchEt.text.toString()
+            searchNoresultTv.setText("\"${query}\"에 대한 검색결과가 존재하지 않습니다.")
             if(query.isEmpty()){
                 searchAdapter.submitList(listOf())
             }
@@ -150,7 +173,6 @@ class SearchFragment : Fragment() {
     }
 
     fun showDialog(){
-
     }
 
 

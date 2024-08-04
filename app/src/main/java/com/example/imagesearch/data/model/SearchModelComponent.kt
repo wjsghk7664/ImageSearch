@@ -47,3 +47,7 @@ fun ArrayList<DocumentResponse>.indexOfDoc(documentResponse: DocumentResponse):I
     }
     return -1
 }
+
+fun DocumentResponse.equalsDoc(documentResponse: DocumentResponse):Boolean{
+    return if(this.title==documentResponse.title&&this.time==documentResponse.time&&this.thumbnail==documentResponse.thumbnail) true else false
+}
