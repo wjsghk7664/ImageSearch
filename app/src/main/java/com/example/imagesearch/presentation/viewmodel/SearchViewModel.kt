@@ -10,16 +10,14 @@ import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
 import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
-import com.example.imagesearch.domain.RemoteImageUsecase
-import com.example.imagesearch.domain.RemoteVideoUsecase
+import com.example.imagesearch.domain.RemoteDataSearchUsecase
 import com.example.imagesearch.presentation.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val remoteImageUsecase: RemoteImageUsecase,
-    private val remoteVideoUsecase: RemoteVideoUsecase,
+    private val remoteDataSearchUsecase: RemoteDataSearchUsecase,
     private val localDataGetUsecase: LocalDataGetUsecase,
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,
     private val localDataSaveUsecase: LocalDataSaveUsecase,
@@ -38,19 +36,7 @@ class SearchViewModel(
         var list:ArrayList<DocumentResponse>? = ArrayList()
         updateData()
         viewModelScope.launch {
-            _results.value= UiState.Loading
-
-            val ImageResult = remoteImageUsecase(query, page)
-            val VideoResult = remoteVideoUsecase(query, page)
-
-            if(ImageResult==null&&VideoResult==null){
-                list = null
-            }else{
-                list = ArrayList()
-                ImageResult?.documents?.forEach { list!!+=it }
-                VideoResult?.documents?.forEach { list!!+=it }
-                list!!.sortByDescending{it.time}
-            }
+            list=remoteDataSearchUsecase(query, page)
         }.invokeOnCompletion {
             _results.value=when(list){
                 ArrayList<DocumentResponse>() -> UiState.Empty

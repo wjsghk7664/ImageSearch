@@ -18,13 +18,13 @@ class LocalDataSource(context: Context) {
     private val sharedPreferencesQuery = context.getSharedPreferences("query_pref",0)
 
     init {
-        key = sharedPreferences.all.keys.toMutableList() as ArrayList<String>
+        key = sharedPreferences.all.keys.sorted().toMutableList() as ArrayList<String>
     }
 
     private val gson = Gson()
 
     fun saveData(documentResponse: DocumentResponse){
-        val curkey=(if(documentResponse is ImageDocumentResponse) "I" else "V") + documentResponse.hashCode().toString()
+        val curkey=System.currentTimeMillis().toString() + (if(documentResponse is ImageDocumentResponse) "I" else "V")
         val docJson=gson.toJson(documentResponse)
         sharedPreferences.edit().putString(curkey,docJson).apply()
         key +=curkey
@@ -38,7 +38,8 @@ class LocalDataSource(context: Context) {
     fun getDatas():ArrayList<DocumentResponse>{
         val result = ArrayList<DocumentResponse>()
         for(i in key){
-            if(i[0]=='I'){
+            Log.d("키",i)
+            if(i.last()=='I'){
                 result+=gson.fromJson(sharedPreferences.getString(i,""),ImageDocumentResponse::class.java)
             }else{
                 result+=gson.fromJson(sharedPreferences.getString(i,""), VideoDocumentResponse::class.java)
