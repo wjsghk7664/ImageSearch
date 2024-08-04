@@ -35,7 +35,7 @@ class SearchViewModel(
         var list:ArrayList<DocumentResponse>? = ArrayList()
         viewModelScope.launch {
             _results.value=UiState.Loading
-            list=remoteDataSearchUsecase(query,1)
+            list=remoteDataSearchUsecase(query,1,true)
         }.invokeOnCompletion {
             _results.value=when(list){
                 ArrayList<DocumentResponse>() -> UiState.Empty
@@ -49,7 +49,7 @@ class SearchViewModel(
         var list:ArrayList<DocumentResponse>? = ArrayList()
         viewModelScope.launch {
             _results.value=UiState.Loading
-            list=remoteDataSearchUsecase(query, page)
+            list=remoteDataSearchUsecase(query, page, false)
             Log.d("추가 검색",list.toString())
         }.invokeOnCompletion {
             _results.value=when(list){

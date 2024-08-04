@@ -6,10 +6,16 @@ import com.example.imagesearch.data.search.SearchRepository
 
 class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
 
-    var imgIsEnd = false
-    var videoIsEnd = false
+    private var imgIsEnd = false
+    private var videoIsEnd = false
 
-    suspend operator fun invoke(query:String,page:Int):ArrayList<DocumentResponse>?{
+    suspend operator fun invoke(query:String,page:Int, isInit:Boolean):ArrayList<DocumentResponse>?{
+
+        if(isInit) {
+            imgIsEnd =false
+            videoIsEnd =false
+        }
+
         val img=if(!imgIsEnd) searchRepository.getImage(query, page).getOrNull() else null
         val video=if(!videoIsEnd) searchRepository.getVideo(query, page).getOrNull() else null
 
@@ -18,6 +24,8 @@ class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
 
         Log.d("추가 검색 이미지",img?.toString()?:"")
         Log.d("추가 검색 비디오", video?.toString()?:"")
+        Log.d("추가 검색어",query+", "+page.toString())
+        Log.d("추가 검색 불리언",imgIsEnd.toString()+"/"+videoIsEnd.toString())
 
         var result:List<DocumentResponse>?
 

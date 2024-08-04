@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
@@ -81,18 +82,19 @@ class SearchFragment : Fragment() {
 
         viewModel.results.observe(viewLifecycleOwner) {
             var showNoResult=false
+            Log.d("UI상태",it.toString())
             when (it) {
                 is UiState.Init -> searchEt.setText(it.initQuery)
                 is UiState.Empty -> {
                     list = ArrayList()
                     showNoResult=true
                 }
-                is UiState.AdditionalEmpty -> null
+                is UiState.AdditionalEmpty -> showToast()
                 is UiState.FailureInit -> {
                     list = ArrayList()
                     showNoResult=true
                 }
-                is UiState.FailureAdditional -> null
+                is UiState.FailureAdditional -> showToast()
                 is UiState.SuccessInit -> list = it.docuList
                 is UiState.SuccessAdditional -> {
                     list +=it.docuList
@@ -130,7 +132,7 @@ class SearchFragment : Fragment() {
                     }
                 }
 
-                if(!searchRv.canScrollVertically(1)&&scrollFlag){
+                if(!searchRv.canScrollVertically(1)&&scrollFlag&&list.isNotEmpty()){
                     if(query.isNotEmpty()) {
                         lifecycleScope.launch {
                             scrollFlag=false
@@ -172,7 +174,8 @@ class SearchFragment : Fragment() {
         viewModel.deleteData(position)
     }
 
-    fun showDialog(){
+    fun showToast(){
+        Toast.makeText(requireContext(), "더 이상 검색결과가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
     }
 
 
