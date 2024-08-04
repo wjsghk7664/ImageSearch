@@ -3,8 +3,8 @@ package com.example.imagesearch.domain
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.data.search.SearchRepository
 
-class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
-    suspend operator fun invoke(query:String, page:Int):ArrayList<DocumentResponse>?{
+class RemoteDataSearchAdditionalUsecase(private val searchRepository: SearchRepository) {
+    suspend operator fun invoke(query:String,page:Int):ArrayList<DocumentResponse>?{
         val img=searchRepository.getImage(query, page).getOrNull()
         val video=searchRepository.getVideo(query, page).getOrNull()
 

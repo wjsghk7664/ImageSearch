@@ -10,14 +10,14 @@ import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
 import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
-import com.example.imagesearch.domain.RemoteDataSearchUsecase
+import com.example.imagesearch.domain.RemoteDataSearchAdditionalUsecase
+import com.example.imagesearch.domain.RemoteDataSearchInitUsecase
 import com.example.imagesearch.presentation.UiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val remoteDataSearchUsecase: RemoteDataSearchUsecase,
+    private val remoteDataSearchInitUsecase: RemoteDataSearchInitUsecase,
+    private val remoteDataSearchAdditionalUsecase: RemoteDataSearchAdditionalUsecase,
     private val localDataGetUsecase: LocalDataGetUsecase,
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,
     private val localDataSaveUsecase: LocalDataSaveUsecase,
@@ -32,18 +32,30 @@ class SearchViewModel(
         initQuery()
     }
 
-    fun search(query: String, page:Int){
+    fun searchInit(query: String){
         var list:ArrayList<DocumentResponse>? = ArrayList()
-        updateData()
         viewModelScope.launch {
-            list=remoteDataSearchUsecase(query, page)
+            list=remoteDataSearchInitUsecase(query)
         }.invokeOnCompletion {
             _results.value=when(list){
                 ArrayList<DocumentResponse>() -> UiState.Empty
-                null -> UiState.Failure(page)
-                else -> UiState.Success(list as ArrayList<DocumentResponse>, page)
+                null -> UiState.FailureInit
+                else -> UiState.SuccessInit(list!!)
             }
          }
+    }
+
+    fun searchAdditional(query: String, page:Int){
+        var list:ArrayList<DocumentResponse>? = ArrayList()
+        viewModelScope.launch {
+            list=remoteDataSearchAdditionalUsecase(query, page)
+        }.invokeOnCompletion {
+            _results.value=when(list){
+                ArrayList<DocumentResponse>() -> UiState.AdditionalEmpty
+                null -> UiState.FailureAdditional
+                else -> UiState.SuccessAdditional(list!!)
+            }
+        }
     }
 
     fun addData(documentResponse: DocumentResponse){

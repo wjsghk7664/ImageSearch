@@ -6,8 +6,11 @@ import retrofit2.http.Query
 sealed class UiState {
     data class Init(val initQuery: String,val stored:ArrayList<DocumentResponse>) : UiState()
     object Empty : UiState()
+    object AdditionalEmpty:UiState()
     object Loading : UiState()
-    data class Failure(val page:Int) : UiState() //
-    data class Success(val docuList:ArrayList<DocumentResponse>, val page: Int): UiState()
+    object FailureInit: UiState()
+    object FailureAdditional : UiState() //
+    data class SuccessInit(val docuList: ArrayList<DocumentResponse>) : UiState()
+    data class SuccessAdditional(val docuList:ArrayList<DocumentResponse>): UiState()
     data class Update(val stored:ArrayList<DocumentResponse>): UiState()
 }

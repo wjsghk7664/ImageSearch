@@ -9,13 +9,15 @@ import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase
 import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
-import com.example.imagesearch.domain.RemoteDataSearchUsecase
+import com.example.imagesearch.domain.RemoteDataSearchAdditionalUsecase
+import com.example.imagesearch.domain.RemoteDataSearchInitUsecase
 
 class SearchViewModelFactory(private val searchRepository: SearchRepository, private val localRepository: LocalRepository): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(SearchViewModel::class.java)){
             return SearchViewModel(
-                RemoteDataSearchUsecase(searchRepository),
+                RemoteDataSearchInitUsecase(searchRepository),
+                RemoteDataSearchAdditionalUsecase(searchRepository),
                 LocalDataGetUsecase(localRepository),
                 LocalDataDeleteUsecase(localRepository),
                 LocalDataSaveUsecase(localRepository),

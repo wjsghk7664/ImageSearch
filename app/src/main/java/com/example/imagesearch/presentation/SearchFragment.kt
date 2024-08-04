@@ -3,6 +3,7 @@ package com.example.imagesearch.presentation
 import android.animation.ObjectAnimator
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,7 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private var page = 1
     private var query = ""
+    private var scrollFlag=true
 
     private var _binding :FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -72,15 +74,18 @@ class SearchFragment : Fragment() {
             when (it) {
                 is UiState.Init -> searchEt.setText(it.initQuery)
                 is UiState.Empty -> list = ArrayList()
-                is UiState.Failure -> {
-                    if (it.page == 1) list = ArrayList()
-                    page = 1
+                is UiState.AdditionalEmpty -> null
+                is UiState.FailureInit -> list = ArrayList()
+                is UiState.FailureAdditional -> null
+                is UiState.SuccessInit -> list = it.docuList
+                is UiState.SuccessAdditional -> {
+                    list +=it.docuList
+                    Log.d("성공 추가",page.toString())
                 }
-                is UiState.Success -> if (it.page == 1) list = it.docuList else list += it.docuList
                 is UiState.Update -> searchAdapter.updateStored(it.stored)
-                is UiState.Loading -> null
+                is UiState.Loading -> showDialog()
             }
-            searchAdapter.submitList(list.toList())
+            if(it is UiState.Loading) showDialog() else searchAdapter.submitList(list.toList())
         }
 
         searchRv.addOnScrollListener(object :RecyclerView.OnScrollListener(){
@@ -103,8 +108,16 @@ class SearchFragment : Fragment() {
                     }
                 }
 
-                if(!searchRv.canScrollVertically(1)){
-                    if(query.isNotEmpty()) viewModel.search(query,++page)
+                if(!searchRv.canScrollVertically(1)&&scrollFlag){
+                    if(query.isNotEmpty()) {
+                        lifecycleScope.launch {
+                            scrollFlag=false
+                            delay(100)
+                            viewModel.searchAdditional(query,++page)
+                        }.invokeOnCompletion {
+                            scrollFlag=true
+                        }
+                    }
                 }
             }
         })
@@ -121,7 +134,7 @@ class SearchFragment : Fragment() {
             }
             else{
                 page=1
-                viewModel.search(query,page)
+                viewModel.searchInit(query)
             }
             manager.hideSoftInputFromWindow(it.windowToken,0)
             viewModel.saveQuery(query)
@@ -134,6 +147,10 @@ class SearchFragment : Fragment() {
 
     val onClickDelete:(Int) -> Unit = { position ->
         viewModel.deleteData(position)
+    }
+
+    fun showDialog(){
+
     }
 
 
