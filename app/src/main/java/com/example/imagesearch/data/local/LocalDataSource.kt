@@ -1,4 +1,4 @@
-package com.example.imagesearch.data.storage
+package com.example.imagesearch.data.local
 
 import android.content.Context
 import android.util.Log

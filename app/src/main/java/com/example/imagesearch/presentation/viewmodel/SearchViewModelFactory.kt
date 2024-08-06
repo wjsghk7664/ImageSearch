@@ -2,8 +2,8 @@ package com.example.imagesearch.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.imagesearch.data.search.SearchRepository
-import com.example.imagesearch.data.storage.LocalRepository
+import com.example.imagesearch.data.remote.SearchRepository
+import com.example.imagesearch.data.local.LocalRepository
 import com.example.imagesearch.domain.LocalDataDeleteUsecase
 import com.example.imagesearch.domain.LocalDataGetQueryUsecase
 import com.example.imagesearch.domain.LocalDataGetUsecase

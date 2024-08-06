@@ -1,4 +1,4 @@
-package com.example.imagesearch.data.storage
+package com.example.imagesearch.data.local
 
 import com.example.imagesearch.data.model.DocumentResponse
 

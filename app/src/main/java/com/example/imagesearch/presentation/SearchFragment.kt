@@ -11,17 +11,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.imagesearch.R
-import com.example.imagesearch.data.search.SearchRepositoryRemoteImpl
+import com.example.imagesearch.data.remote.SearchRepositoryRemoteImpl
 import com.example.imagesearch.data.model.DocumentResponse
-import com.example.imagesearch.data.storage.LocalDataSource
-import com.example.imagesearch.data.storage.LocalRepositoryImpl
+import com.example.imagesearch.data.local.LocalDataSource
+import com.example.imagesearch.data.local.LocalRepositoryImpl
 import com.example.imagesearch.databinding.FragmentSearchBinding
 import com.example.imagesearch.presentation.viewmodel.SearchViewModel
 import com.example.imagesearch.presentation.viewmodel.SearchViewModelFactory
@@ -107,15 +105,13 @@ class SearchFragment : Fragment() {
                     is UiState.Update -> searchAdapter.updateStored(it.stored)
                     is UiState.Loading -> null
                 }
-                withContext(Dispatchers.Main){
-                    if(it is UiState.Loading){
-                        loadingDialog.show()
-                    } else{
-                        searchAdapter.submitList(list.toList())
-                        loadingDialog.dismiss()
-                    }
-                    searchNoresultTv.visibility = if(showNoResult) View.VISIBLE else View.INVISIBLE
+                if(it is UiState.Loading){
+                    loadingDialog.show()
+                } else{
+                    searchAdapter.submitList(list.toList())
+                    loadingDialog.dismiss()
                 }
+                searchNoresultTv.visibility = if(showNoResult) View.VISIBLE else View.INVISIBLE
 
             }
         }

@@ -1,10 +1,7 @@
 package com.example.imagesearch.domain
 
-import android.util.Log
 import com.example.imagesearch.data.model.DocumentResponse
-import com.example.imagesearch.data.model.ImageSearchModel
-import com.example.imagesearch.data.model.VideoSearchModel
-import com.example.imagesearch.data.search.SearchRepository
+import com.example.imagesearch.data.remote.SearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

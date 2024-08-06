@@ -1,4 +1,4 @@
-package com.example.imagesearch.data.search
+package com.example.imagesearch.data.remote
 
 import com.example.imagesearch.data.model.ImageSearchModel
 import retrofit2.http.GET

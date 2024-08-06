@@ -7,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.imagesearch.data.search.SearchRepositoryRemoteImpl
-import com.example.imagesearch.data.storage.LocalDataSource
-import com.example.imagesearch.data.storage.LocalRepositoryImpl
+import com.example.imagesearch.data.remote.SearchRepositoryRemoteImpl
+import com.example.imagesearch.data.local.LocalDataSource
+import com.example.imagesearch.data.local.LocalRepositoryImpl
 import com.example.imagesearch.databinding.FragmentMyStorageBinding
 import com.example.imagesearch.presentation.viewmodel.SearchViewModel
 import com.example.imagesearch.presentation.viewmodel.SearchViewModelFactory

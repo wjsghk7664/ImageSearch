@@ -1,4 +1,4 @@
-package com.example.imagesearch.data.search
+package com.example.imagesearch.data.remote
 
 import okhttp3.Interceptor
 import okhttp3.Response
