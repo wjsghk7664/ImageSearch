@@ -13,11 +13,14 @@ import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
 import com.example.imagesearch.domain.RemoteDataSearchUsecase
 import com.example.imagesearch.presentation.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel(
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val remoteDataSearchUsecase: RemoteDataSearchUsecase,
     private val localDataGetUsecase: LocalDataGetUsecase,
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,

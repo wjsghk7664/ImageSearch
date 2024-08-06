@@ -1,62 +1,71 @@
 package com.example.imagesearch.data.local
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.data.model.ImageDocumentResponse
 import com.example.imagesearch.data.model.VideoDocumentResponse
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LocalDataSource(context: Context) {
+@Singleton
+class LocalDataSource @Inject constructor(
+    @SharePreferencesSearch private val sharedPreferencesSearch: SharedPreferences,
+    @SharedPreferencesQuary private val sharedPreferencesQuery: SharedPreferences,
+    private val gson: Gson
+) {
 
-    companion object{
-        var key=ArrayList<String>()
-    }
-
-    private val sharedPreferences = context.getSharedPreferences("search_pref",0)
-
-    private val sharedPreferencesQuery = context.getSharedPreferences("query_pref",0)
+    var key = ArrayList<String>()
 
     init {
-        key = sharedPreferences.all.keys.sorted().toMutableList() as ArrayList<String>
+        key = sharedPreferencesSearch.all.keys.sorted().toMutableList() as ArrayList<String>
     }
 
-    private val gson = Gson()
-
-    fun saveData(documentResponse: DocumentResponse){
-        val curkey=System.currentTimeMillis().toString() + (if(documentResponse is ImageDocumentResponse) "I" else "V")
-        val docJson=gson.toJson(documentResponse)
-        sharedPreferences.edit().putString(curkey,docJson).apply()
-        key +=curkey
+    fun saveData(documentResponse: DocumentResponse) {
+        val curkey = System.currentTimeMillis()
+            .toString() + (if (documentResponse is ImageDocumentResponse) "I" else "V")
+        val docJson = gson.toJson(documentResponse)
+        sharedPreferencesSearch.edit().putString(curkey, docJson).apply()
+        key += curkey
     }
 
-    fun deleteData(position: Int){
-        try{
-            sharedPreferences.edit().remove(key[position]).apply()
+    fun deleteData(position: Int) {
+        try {
+            sharedPreferencesSearch.edit().remove(key[position]).apply()
             key.removeAt(position)
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
 
     }
 
-    fun getDatas():ArrayList<DocumentResponse>{
+    fun getDatas(): ArrayList<DocumentResponse> {
         val result = ArrayList<DocumentResponse>()
-        for(i in key){
-            Log.d("키",i)
-            if(i.last()=='I'){
-                result+=gson.fromJson(sharedPreferences.getString(i,""),ImageDocumentResponse::class.java)
-            }else{
-                result+=gson.fromJson(sharedPreferences.getString(i,""), VideoDocumentResponse::class.java)
+        for (i in key) {
+            Log.d("키", i)
+            if (i.last() == 'I') {
+                result += gson.fromJson(
+                    sharedPreferencesSearch.getString(i, ""),
+                    ImageDocumentResponse::class.java
+                )
+            } else {
+                result += gson.fromJson(
+                    sharedPreferencesSearch.getString(i, ""),
+                    VideoDocumentResponse::class.java
+                )
             }
         }
-        Log.d("로컬 데이터",result.toString())
+        Log.d("로컬 데이터", result.toString())
         return result
     }
 
-    fun saveQuery(query:String){
-        sharedPreferencesQuery.edit().putString("query",query).apply()
+    fun saveQuery(query: String) {
+        sharedPreferencesQuery.edit().putString("query", query).apply()
     }
 
-    fun getQuery():String{
-        return sharedPreferencesQuery.getString("query","")?:""
+    fun getQuery(): String {
+        return sharedPreferencesQuery.getString("query", "") ?: ""
     }
 }

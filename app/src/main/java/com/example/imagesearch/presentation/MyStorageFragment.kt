@@ -14,19 +14,15 @@ import com.example.imagesearch.data.local.LocalDataSource
 import com.example.imagesearch.data.local.LocalRepositoryImpl
 import com.example.imagesearch.databinding.FragmentMyStorageBinding
 import com.example.imagesearch.presentation.viewmodel.SearchViewModel
-import com.example.imagesearch.presentation.viewmodel.SearchViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MyStorageFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by activityViewModels{
-        SearchViewModelFactory(
-            SearchRepositoryRemoteImpl(),
-            LocalRepositoryImpl(LocalDataSource(requireContext()))
-        )
-    }
+    private val viewModel: SearchViewModel by activityViewModels()
 
     private lateinit var storageAdapter: StorageAdapter
 

@@ -4,6 +4,7 @@ plugins {
 
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+
 }
 
 android {
@@ -40,6 +41,8 @@ android {
     buildFeatures{
         viewBinding = true
     }
+
+   
 }
 
 dependencies {

@@ -22,30 +22,24 @@ import com.example.imagesearch.data.local.LocalDataSource
 import com.example.imagesearch.data.local.LocalRepositoryImpl
 import com.example.imagesearch.databinding.FragmentSearchBinding
 import com.example.imagesearch.presentation.viewmodel.SearchViewModel
-import com.example.imagesearch.presentation.viewmodel.SearchViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by activityViewModels{
-        SearchViewModelFactory(SearchRepositoryRemoteImpl(),LocalRepositoryImpl(LocalDataSource(requireContext())))
-    }
+    private val viewModel: SearchViewModel by activityViewModels()
 
     val manager by lazy {
         requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
-    private val loadingDialog by lazy {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle("로딩중...")
-            setView(layoutInflater.inflate(R.layout.dialog_loading, null))
-        }.create()
-    }
+    @Inject lateinit var loadingDialog : AlertDialog
 
     private var list = ArrayList<DocumentResponse>()
 

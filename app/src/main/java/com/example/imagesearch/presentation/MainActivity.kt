@@ -8,7 +8,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.imagesearch.data.model.ImageDocumentResponse
 import com.example.imagesearch.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val binding by lazy {

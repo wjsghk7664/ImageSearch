@@ -6,8 +6,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
+@Singleton
+class RemoteDataSearchUsecase @Inject constructor(private val searchRepository: SearchRepository) {
 
     private var imgIsEnd = false
     private var videoIsEnd = false
