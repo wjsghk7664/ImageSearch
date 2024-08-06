@@ -51,23 +51,7 @@ class SearchAdapter(val onClickAdd:(DocumentResponse) ->Unit,val onClickDelete:(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val documentResponse:DocumentResponse = currentList[position]
-        (holder as SearchViewHolder).apply {
-            img.load(documentResponse.thumbnail){
-                scale(Scale.FILL)
-            }
-            title.setText((if(documentResponse is ImageDocumentResponse) "[Image]" else "[Video]")+documentResponse.title)
-            date.setText(documentResponse.time)
-            star.visibility = if(curStored.containsDoc(documentResponse)) View.VISIBLE else View.GONE
-
-            rootView.setOnClickListener{
-                if(curStored.containsDoc(documentResponse)){
-                    onClickDelete(curStored.indexOfDoc(documentResponse))
-                }else{
-                    onClickAdd(documentResponse)
-                }
-            }
-        }
-
+        (holder as SearchViewHolder).bind(documentResponse,onClickAdd,onClickDelete)
     }
 
     override fun getItemCount(): Int {
@@ -85,6 +69,23 @@ class SearchAdapter(val onClickAdd:(DocumentResponse) ->Unit,val onClickDelete:(
         val title = binding.itemTvTitle
         val date = binding.itemTvDate
         val star = binding.itemIvStar
+
+        fun bind(documentResponse: DocumentResponse, onClickAdd:(DocumentResponse) ->Unit, onClickDelete:(Int) ->Unit){
+            img.load(documentResponse.thumbnail){
+                scale(Scale.FILL)
+            }
+            title.setText((if(documentResponse is ImageDocumentResponse) "[Image]" else "[Video]")+documentResponse.title)
+            date.setText(documentResponse.time)
+            star.visibility = if(curStored.containsDoc(documentResponse)) View.VISIBLE else View.GONE
+
+            rootView.setOnClickListener{
+                if(curStored.containsDoc(documentResponse)){
+                    onClickDelete(curStored.indexOfDoc(documentResponse))
+                }else{
+                    onClickAdd(documentResponse)
+                }
+            }
+        }
     }
 
 

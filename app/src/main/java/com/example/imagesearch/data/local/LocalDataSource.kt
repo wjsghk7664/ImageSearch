@@ -31,8 +31,11 @@ class LocalDataSource(context: Context) {
     }
 
     fun deleteData(position: Int){
-        sharedPreferences.edit().remove(key[position]).apply()
-        key.removeAt(position)
+        try{
+            sharedPreferences.edit().remove(key[position]).apply()
+            key.removeAt(position)
+        }catch (e:Exception){}
+
     }
 
     fun getDatas():ArrayList<DocumentResponse>{
