@@ -53,14 +53,16 @@ class MyStorageFragment : Fragment() {
         mystorageRv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         mystorageRv.adapter=storageAdapter
 
-        viewModel.results.observe(viewLifecycleOwner) {
-            Log.d("컬 스토리지",it.toString())
-            when (it) {
-                is UiState.Init -> storageAdapter.submitList(it.stored.toList())
-                is UiState.Update -> storageAdapter.submitList(it.stored.toList())
-                else -> null
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.results.collectLatest {
+                Log.d("컬 스토리지",it.toString())
+                when (it) {
+                    is UiState.Update -> storageAdapter.submitList(it.stored.toList())
+                    else -> null
+                }
             }
         }
+
     }
 
     val onClick:(Int) -> Unit = { position ->

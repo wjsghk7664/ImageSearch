@@ -80,36 +80,44 @@ class SearchFragment : Fragment() {
         searchRv.adapter = searchAdapter
         searchRv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        viewModel.results.observe(viewLifecycleOwner) {
-            var showNoResult=false
-            Log.d("UI상태",it.toString())
-            when (it) {
-                is UiState.Init -> searchEt.setText(it.initQuery)
-                is UiState.Empty -> {
-                    list = ArrayList()
-                    showNoResult=true
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.results.collectLatest {
+                var showNoResult=false
+                Log.d("UI상태",it.toString())
+                when (it) {
+                    is UiState.Init -> {
+                        searchEt.setText(it.initQuery)
+                        viewModel.updateData()
+                    }
+                    is UiState.Empty -> {
+                        list = ArrayList()
+                        showNoResult=true
+                    }
+                    is UiState.AdditionalEmpty -> showToast()
+                    is UiState.FailureInit -> {
+                        list = ArrayList()
+                        showNoResult=true
+                    }
+                    is UiState.FailureAdditional -> showToast()
+                    is UiState.SuccessInit -> list = it.docuList
+                    is UiState.SuccessAdditional -> {
+                        list +=it.docuList
+                        Log.d("추가 검색", page.toString())
+                    }
+                    is UiState.Update -> searchAdapter.updateStored(it.stored)
+                    is UiState.Loading -> null
                 }
-                is UiState.AdditionalEmpty -> showToast()
-                is UiState.FailureInit -> {
-                    list = ArrayList()
-                    showNoResult=true
+                withContext(Dispatchers.Main){
+                    if(it is UiState.Loading){
+                        loadingDialog.show()
+                    } else{
+                        searchAdapter.submitList(list.toList())
+                        loadingDialog.dismiss()
+                    }
+                    searchNoresultTv.visibility = if(showNoResult) View.VISIBLE else View.INVISIBLE
                 }
-                is UiState.FailureAdditional -> showToast()
-                is UiState.SuccessInit -> list = it.docuList
-                is UiState.SuccessAdditional -> {
-                    list +=it.docuList
-                    Log.d("추가 검색", page.toString())
-                }
-                is UiState.Update -> searchAdapter.updateStored(it.stored)
-                is UiState.Loading -> null
+
             }
-            if(it is UiState.Loading){
-                loadingDialog.show()
-            } else{
-                searchAdapter.submitList(list.toList())
-                loadingDialog.dismiss()
-            }
-            searchNoresultTv.visibility = if(showNoResult) View.VISIBLE else View.INVISIBLE
         }
 
         searchRv.addOnScrollListener(object :RecyclerView.OnScrollListener(){

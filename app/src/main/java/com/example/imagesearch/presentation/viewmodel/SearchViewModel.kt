@@ -13,6 +13,8 @@ import com.example.imagesearch.domain.LocalDataSaveQueryUsecase
 import com.example.imagesearch.domain.LocalDataSaveUsecase
 import com.example.imagesearch.domain.RemoteDataSearchUsecase
 import com.example.imagesearch.presentation.UiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -24,8 +26,8 @@ class SearchViewModel(
     private val localDataSaveQueryUsecase: LocalDataSaveQueryUsecase
 ) : ViewModel() {
 
-    private val _results: MutableLiveData<UiState> = MutableLiveData(UiState.Empty)
-    val results = _results as LiveData<UiState>
+    private val _results: MutableStateFlow<UiState> = MutableStateFlow(UiState.Empty)
+    val results = _results as StateFlow<UiState>
 
     init {
         initQuery()
@@ -75,7 +77,7 @@ class SearchViewModel(
     }
 
     fun initQuery(){
-        _results.value = UiState.Init(localDataGetQueryUsecase(),localDataGetUsecase())
+        _results.value = UiState.Init(localDataGetQueryUsecase())
     }
 
     fun saveQuery(query:String){

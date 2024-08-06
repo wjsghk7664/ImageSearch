@@ -2,7 +2,13 @@ package com.example.imagesearch.domain
 
 import android.util.Log
 import com.example.imagesearch.data.model.DocumentResponse
+import com.example.imagesearch.data.model.ImageSearchModel
+import com.example.imagesearch.data.model.VideoSearchModel
 import com.example.imagesearch.data.search.SearchRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
 
@@ -16,24 +22,26 @@ class RemoteDataSearchUsecase(private val searchRepository: SearchRepository) {
             videoIsEnd =false
         }
 
-        val img=if(!imgIsEnd) searchRepository.getImage(query, page).getOrNull() else null
-        val video=if(!videoIsEnd) searchRepository.getVideo(query, page).getOrNull() else null
-
-        imgIsEnd=img?.meta?.is_end?:true
-        videoIsEnd=video?.meta?.is_end?:true
-
-        Log.d("추가 검색 이미지",img?.toString()?:"")
-        Log.d("추가 검색 비디오", video?.toString()?:"")
-        Log.d("추가 검색어",query+", "+page.toString())
-        Log.d("추가 검색 불리언",imgIsEnd.toString()+"/"+videoIsEnd.toString())
 
         var result:List<DocumentResponse>?
+        coroutineScope {
+            withContext(Dispatchers.IO){
+                val imgDef = async { if(!imgIsEnd) searchRepository.getImage(query, page).getOrNull() else null }
+                val videoDef=async { if(!videoIsEnd) searchRepository.getVideo(query, page).getOrNull() else null }
 
-        if(img==null&&video==null){
-            result=null
-        }else{
-            result=((img?.documents?: listOf()) + (video?.documents?: listOf())).sortedByDescending { it.time }
+                val img=imgDef.await()
+                val video=videoDef.await()
+
+                imgIsEnd=img?.meta?.is_end?:true
+                videoIsEnd=video?.meta?.is_end?:true
+                if(img==null&&video==null){
+                    result=null
+                }else{
+                    result=((img?.documents?: listOf()) + (video?.documents?: listOf())).sortedByDescending { it.time }
+                }
+            }
         }
+
         return result?.toCollection(ArrayList())
 
     }

@@ -4,7 +4,7 @@ import com.example.imagesearch.data.model.DocumentResponse
 import retrofit2.http.Query
 
 sealed class UiState {
-    data class Init(val initQuery: String,val stored:ArrayList<DocumentResponse>) : UiState()
+    data class Init(val initQuery: String) : UiState()
     object Empty : UiState()
     object AdditionalEmpty:UiState()
     object Loading : UiState()
