@@ -1,8 +1,6 @@
 package com.example.imagesearch.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imagesearch.data.model.DocumentResponse
@@ -26,7 +24,7 @@ class SearchViewModel @Inject constructor(
     private val localDataDeleteUsecase: LocalDataDeleteUsecase,
     private val localDataSaveUsecase: LocalDataSaveUsecase,
     private val localDataGetQueryUsecase: LocalDataGetQueryUsecase,
-    private val localDataSaveQueryUsecase: LocalDataSaveQueryUsecase
+    private val localDataSaveQueryUsecase: LocalDataSaveQueryUsecase,
 ) : ViewModel() {
 
     private val _results: MutableStateFlow<UiState> = MutableStateFlow(UiState.Empty)

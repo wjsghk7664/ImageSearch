@@ -8,10 +8,11 @@ import com.example.imagesearch.data.model.ImageDocumentResponse
 import com.example.imagesearch.data.model.VideoDocumentResponse
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@ViewModelScoped
 class LocalDataSource @Inject constructor(
     @SharePreferencesSearch private val sharedPreferencesSearch: SharedPreferences,
     @SharedPreferencesQuary private val sharedPreferencesQuery: SharedPreferences,

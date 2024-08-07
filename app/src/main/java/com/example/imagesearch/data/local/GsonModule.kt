@@ -12,7 +12,6 @@ import javax.inject.Singleton
 object GsonModule {
 
     @Provides
-    @Singleton
     fun provideGson(): Gson {
         return Gson()
     }

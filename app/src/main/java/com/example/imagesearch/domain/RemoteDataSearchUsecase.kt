@@ -2,14 +2,14 @@ package com.example.imagesearch.domain
 
 import com.example.imagesearch.data.model.DocumentResponse
 import com.example.imagesearch.data.remote.SearchRepository
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@ViewModelScoped
 class RemoteDataSearchUsecase @Inject constructor(private val searchRepository: SearchRepository) {
 
     private var imgIsEnd = false

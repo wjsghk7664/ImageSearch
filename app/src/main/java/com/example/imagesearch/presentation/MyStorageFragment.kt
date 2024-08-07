@@ -40,6 +40,8 @@ class MyStorageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("뷰모델 체크",viewModel.hashCode().toString())
+
         initView()
     }
 
