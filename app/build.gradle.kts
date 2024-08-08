@@ -1,3 +1,6 @@
+import com.android.build.api.dsl.ComposeOptions
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -40,7 +43,13 @@ android {
 
     buildFeatures{
         viewBinding = true
+        compose = true
     }
+
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+
 
    
 }
@@ -64,4 +73,20 @@ dependencies {
     //hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+
+    //compose
+    val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
+    implementation (composeBom)
+    androidTestImplementation (composeBom)
+    implementation("androidx.compose.material3:material3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.activity:activity-compose:1.6.1")
+    // Optional - Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+    //collectWithLifecycle사용
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
+    // Optional - Integration with LiveData
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
