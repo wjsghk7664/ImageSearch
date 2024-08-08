@@ -57,7 +57,6 @@ fun MainScreen(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[curPage])
                         .fillMaxWidth()
-                        .align(Alignment.TopEnd)
                         .height(4.dp)
                 )
             }) {
